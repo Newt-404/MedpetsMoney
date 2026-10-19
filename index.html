@@ -432,7 +432,7 @@ nav button.mid span{color:var(--blue)}
 
     <div class="card pad">
       <div class="hc-lbl" style="margin-bottom:10px">Delen met collega's</div>
-      <div id="shareBox"></div>
+      <div id="teamBox"></div>
     </div>
 
     <div class="card pad">
@@ -492,7 +492,7 @@ nav button.mid span{color:var(--blue)}
 
 <script>
 "use strict";
-var VERSION="3.1 \u00b7 19 okt 2026";
+var VERSION="3.1.1 \u00b7 19 okt 2026";
 var MONTHS=["januari","februari","maart","april","mei","juni","juli","augustus","september","oktober","november","december"];
 var MSHORT=["jan","feb","mrt","apr","mei","jun","jul","aug","sep","okt","nov","dec"];
 var DOWS=["M","D","W","D","V","Z","Z"];
@@ -1930,7 +1930,7 @@ function escapeHtml(s){return String(s).replace(/[&<>"']/g,function(c){
   return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
 
 function renderShare(){
-  var box=document.getElementById("shareBox"); if(!box)return;
+  var box=document.getElementById("teamBox"); if(!box)return;
   var sh=S.share, taken=takenColors();
   var others=visibleFriends().map(function(f){return escapeHtml(f.name);});
   var planOpts=S.plans.map(function(p){
