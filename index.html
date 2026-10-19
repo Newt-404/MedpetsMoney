@@ -111,9 +111,14 @@ header svg.mtn{position:absolute;right:-4%;top:-10%;width:76%;opacity:.15;pointe
 .dcell .h{font-size:10px;font-weight:600;line-height:1.1;opacity:.92;font-variant-numeric:tabular-nums}
 .dcell.out{opacity:.4}
 .dcell:active{filter:brightness(.88)}
+.dcell{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+.fdots{position:absolute;top:5px;left:50%;transform:translateX(-50%);display:flex;gap:3px;align-items:center;pointer-events:none}
+.fdots i{display:block;width:6px;height:6px;border-radius:50%;box-shadow:0 0 0 1px #fff}
+.band.none .fdots i{box-shadow:0 0 0 1px var(--card)}
+.fdots em{font-style:normal;font-size:8px;font-weight:800;line-height:1;opacity:.9}
 .dcell .dot{position:absolute;bottom:6px;width:5px;height:5px;border-radius:50%;background:var(--orange)}
-.dcell .pref{position:absolute;top:6px;right:calc(50% - 11px);width:5px;height:5px;border-radius:50%;background:var(--pink)}
-.dcell .pin{position:absolute;top:6px;left:calc(50% - 11px);width:5px;height:5px;border-radius:50%;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.12)}
+.dcell .pref{position:absolute;bottom:6px;right:calc(50% - 12px);width:5px;height:5px;border-radius:50%;background:var(--pink)}
+.dcell .pin{position:absolute;bottom:6px;left:calc(50% - 12px);width:5px;height:5px;border-radius:50%;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.12)}
 .dcell.pick{box-shadow:inset 0 0 0 2.5px rgba(255,255,255,.95)}
 .band.none .dcell.pick{box-shadow:inset 0 0 0 2px var(--blue)}
 .dcell.today .n{text-decoration:underline;text-underline-offset:3px}
@@ -144,7 +149,28 @@ header svg.mtn{position:absolute;right:-4%;top:-10%;width:76%;opacity:.15;pointe
 .entry.sel{border-left-color:var(--bpill)}
 .entry.cust{border-left-color:var(--pink)}
 .entry.busy{border-left-color:var(--busy)}
+.entry.quick{border-left-color:var(--blue)}
+.entry.quick .l1 b{color:var(--blue)}
+.entry.saved{border-left-color:var(--pink)}
+.entry.saved .l1 b{color:var(--pink)}
 .entry .body{flex:1;min-width:0}
+.colls{margin-top:12px;padding-top:10px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:6px}
+.colls .c{display:flex;align-items:center;gap:8px;font-size:14px}
+.colls .c i{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
+.colls .c span{margin-left:auto;color:var(--muted);font-variant-numeric:tabular-nums}
+.swatches{display:flex;flex-wrap:wrap;gap:10px;padding:6px 0 4px}
+.sw{width:32px;height:32px;border-radius:50%;border:3px solid transparent;box-shadow:0 0 0 1px var(--line)}
+.sw.on{border-color:var(--card);box-shadow:0 0 0 2px var(--ink)}
+.sw.taken{opacity:.25;cursor:not-allowed}
+.codebox{display:flex;align-items:center;gap:10px;padding:12px;border-radius:10px;background:var(--card2);border:1px solid var(--line);margin:6px 0}
+.codebox b{flex:1;font-size:20px;letter-spacing:.12em;font-variant-numeric:tabular-nums}
+.codebox button{color:var(--blue);font-weight:800;font-size:13px}
+.shstat{font-size:12.5px;color:var(--muted);margin-top:8px}
+.shstat.ok{color:var(--grad-b)}
+.shstat.err{color:var(--red-l)}
+.txtin{width:100%;background:var(--card2);border:1px solid var(--line);color:var(--ink);border-radius:8px;
+  padding:9px 10px;font-weight:700;font-size:15px}
+.txtin:focus{outline:none;border-color:var(--bpill);background:var(--card)}
 .entry .l1{font-size:15.5px;font-weight:600}
 .entry .l1 b{font-weight:800;margin-right:7px}
 .entry.open .l1 b{color:var(--red-l)}
@@ -334,6 +360,7 @@ nav button.mid span{color:var(--blue)}
         <span><i style="background:var(--orange)"></i>Toeslag</span>
         <span><i style="background:var(--pink)"></i>Voorkeur</span>
       </div>
+      <div class="legend" id="friendLegend" style="border-top:none;margin-top:0;padding-top:6px" hidden></div>
       <div class="calfoot">
         <button id="clrM">Maand leegmaken</button>
         <button id="todayBtn">Vandaag</button>
@@ -379,6 +406,8 @@ nav button.mid span{color:var(--blue)}
       <div class="sectitle">Dagen</div>
       <div class="fld"><label for="fSatDef">Zaterdag standaard</label>
         <select id="fSatDef"><option value="none">Geen dienst</option><option value="open">Open dienst</option></select></div>
+      <div class="fld"><label for="fLong">Lang indrukken plant snelle dienst</label>
+        <select id="fLong"><option value="on">Aan</option><option value="off">Uit</option></select></div>
       <div class="sectitle">Toeslagen</div>
       <div class="fld"><label for="fSun">Zondag, hele dienst (%)</label><input class="num" id="fSun" type="number" step="1"></div>
       <div class="fld"><label for="fSat">Zaterdag, hele dienst (%)</label><input class="num" id="fSat" type="number" step="1"></div>
@@ -399,6 +428,11 @@ nav button.mid span{color:var(--blue)}
         <button class="btn" id="resetSet">Standaard herstellen</button>
         <button class="btn dgr" id="clrAll">Plan leegmaken</button>
       </div>
+    </div>
+
+    <div class="card pad">
+      <div class="hc-lbl" style="margin-bottom:10px">Delen met collega's</div>
+      <div id="shareBox"></div>
     </div>
 
     <div class="card pad">
@@ -458,7 +492,7 @@ nav button.mid span{color:var(--blue)}
 
 <script>
 "use strict";
-var VERSION="Fase 1 \u00b7 11 aug 2026";
+var VERSION="3.1 \u00b7 19 okt 2026";
 var MONTHS=["januari","februari","maart","april","mei","juni","juli","augustus","september","oktober","november","december"];
 var MSHORT=["jan","feb","mrt","apr","mei","jun","jul","aug","sep","okt","nov","dec"];
 var DOWS=["M","D","W","D","V","Z","Z"];
@@ -467,7 +501,7 @@ var DAYNAMES=["Zondag","Maandag","Dinsdag","Woensdag","Donderdag","Vrijdag","Zat
 var TPL_WEEK=["18:00-22:00","13:30-22:00","09:00-17:30","09:00-15:00","08:00-12:00","07:00-15:30","07:00-13:00"];
 var TPL_SAT=["09:00-13:00"];
 var DEFAULTS={rate:15.15,travel:4.00,sun:75,sat:50,fri:50,friFrom:"18:00",
-  brk1:30,brk2:45,vd:10.00,evd:1.15,vt:8.00,pens:6.1875,fran:10.71,whk:0.255,satDefault:"none"};
+  brk1:30,brk2:45,vd:10.00,evd:1.15,vt:8.00,pens:6.1875,fran:10.71,whk:0.255,satDefault:"none",longPress:"on"};
 
 /* ---------- 2026 loonheffing ---------- */
 var TAX={b1:38883,r1:.3575,b2:79137,r2:.3756,r3:.495,ahkMax:3115,ahkStart:29736,ahkRate:.06398};
@@ -492,7 +526,8 @@ function fresh(){
     plans:[p],active:p.id,compare:[p.id],cmpActive:p.id,
     avail:{},pref:{},rules:[],
     view:n.getFullYear()+"-"+String(n.getMonth()+1).padStart(2,"0"),
-    sel:null,tab:"plan",showBd:false,rFrom:null,rTo:null,opt:null};}
+    sel:null,tab:"plan",showBd:false,rFrom:null,rTo:null,opt:null,
+    share:{group:"",name:"",color:"",planId:"",show:true},friends:{},friendsAt:0,savedTimes:[]};}
 function load(){
   try{var raw=localStorage.getItem(KEY);
     if(raw){var p=JSON.parse(raw);
@@ -504,13 +539,13 @@ function load(){
         if(!p.compare||!p.compare.length)p.compare=[p.plans[0].id];
         if(!planById(p.cmpActive,p))p.cmpActive=p.compare[0];
         if(!planById(p.active,p))p.active=p.plans[0].id;
-        return p;}}}catch(e){}
+        return shareDefaults(p);}}}catch(e){}
   return fresh();}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
-function snapObj(){return JSON.stringify({plans:S.plans,settings:S.settings,avail:S.avail,pref:S.pref,rules:S.rules});}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){} sharePublishSoon();}
+function snapObj(){return JSON.stringify({plans:S.plans,settings:S.settings,avail:S.avail,pref:S.pref,rules:S.rules,savedTimes:S.savedTimes});}
 function snap(){optCache=null; hist.push(snapObj()); if(hist.length>80)hist.shift(); future.length=0;}
 function applySnap(s){var o=JSON.parse(s);
-  S.plans=o.plans; S.settings=o.settings; S.avail=o.avail; S.pref=o.pref; S.rules=o.rules;
+  S.plans=o.plans; S.settings=o.settings; S.avail=o.avail; S.pref=o.pref; S.rules=o.rules; S.savedTimes=o.savedTimes||[];
   if(!planById(S.active))S.active=S.plans[0].id;
   S.compare=S.compare.filter(function(id){return !!planById(id);});
   if(!S.compare.length)S.compare=[S.plans[0].id];
@@ -712,7 +747,8 @@ function renderBody(){
   fixSel();
   if(S.tab==="plan"){
     document.getElementById("planBtn").textContent=curPlan().name;
-    renderHours(); renderCal("calGrid",curPlan()); renderDay("dayHdr","entries",curPlan());}
+    renderHours(); renderCal("calGrid",curPlan(),{friends:true}); renderDay("dayHdr","entries",curPlan());
+    renderFriendLegend();}
   if(S.tab==="cmp") renderCmp();
   if(S.tab==="sum") renderSum();
   if(S.tab==="set") renderSet();
@@ -780,6 +816,12 @@ function renderCal(gridId,plan,cfg){
          ';grid-template-columns:repeat('+n+',1fr)">';
       for(var q=i2;q<=j;q++){
         var c=row[q], marks="";
+        if(cfg.friends){
+          var fo=friendsOn(c.k);
+          if(fo.length){
+            var shown=fo.length>3?fo.slice(0,2):fo;
+            marks+='<span class="fdots">'+shown.map(function(f){return '<i style="background:'+f.color+'"></i>';}).join("")+
+              (fo.length>3?'<em>+'+(fo.length-2)+'</em>':'')+'</span>';}}
         if(c.r&&c.r.top>0) marks+='<span class="dot"></span>';
         if(S.pref[c.k]) marks+='<span class="pref"></span>';
         if(c.sh&&c.sh.pin) marks+='<span class="pin"></span>';
@@ -796,7 +838,9 @@ function renderCal(gridId,plan,cfg){
   if(cfg.onPick){
     for(var c3=0;c3<cells.length;c3++) cells[c3].onclick=function(){cfg.onPick(this.dataset.k);};
     return;}
+  for(var c4=0;c4<cells.length;c4++) wireLongPress(cells[c4],planById(cells[c4].dataset.p)||plan);
   for(var c2=0;c2<cells.length;c2++) cells[c2].onclick=function(){
+    if(LP.fired){LP.fired=false;return;}
     var k=this.dataset.k, ym=k.slice(0,7), jumped=(ym!==S.view);
     var samePlan=(S.tab!=="cmp")||(S.cmpActive===this.dataset.p);
     if(!jumped&&samePlan&&S.sel!==k){
@@ -834,7 +878,13 @@ function renderDay(hdrId,entriesId,plan){
       '<button data-av="busy"'+(av==="busy"?' class="on busy"':'')+'>Bezet</button>'+
     '</div>'+
     '<button class="prefbtn'+(S.pref[k]?" on":"")+'" data-pref="1">'+
-      (S.pref[k]?"\u2605 Voorkeursdag":"\u2606 Markeer als voorkeursdag")+'</button>';
+      (S.pref[k]?"\u2605 Voorkeursdag":"\u2606 Markeer als voorkeursdag")+'</button>'+
+    (function(){
+      if(hdrId!=="dayHdr")return "";
+      var fo=friendsOn(k); if(!fo.length)return "";
+      return '<div class="colls">'+fo.map(function(f){var t=f.t.split("-");
+        return '<div class="c"><i style="background:'+f.color+'"></i>'+escapeHtml(f.name)+
+          '<span>'+t[0]+" \u2013 "+t[1]+'</span></div>';}).join("")+'</div>';})();
 
   function line(cls,tag,time,sub,chev,data,pin){
     return '<div class="entry '+cls+'"><div class="body" '+data+' style="cursor:pointer"><div class="l1"><b>'+tag+'</b>'+time+
@@ -855,20 +905,28 @@ function renderDay(hdrId,entriesId,plan){
       h+=line("sel","Gepland",cur.start+" \u2013 "+cur.end,
         hrs(r.paidH)+" uur betaald \u00B7 "+eur(r.pay)+extra+" \u00B7 pauze "+r.brk+" min",
         "\u00D7",'',pinBtn);}
-    tpls.forEach(function(t){
-      if(t===curStr)return;
+    function optLine(cls,tag,t,extraBtn){
       var ab=t.split("-"), rr=calcDay(k,{start:ab[0],end:ab[1]},st);
+      if(!rr)return "";
       var tt=Object.keys(rr.tiers).map(Number).sort(function(x,y){return y-x;});
       var ex=tt.length?' \u00B7 <em>+'+tt[0]+'%</em>':'';
-      h+=line("open",av==="none"?"Extra dienst":"Open dienst",ab[0]+" \u2013 "+ab[1],
-        hrs(rr.paidH)+" uur \u00B7 "+eur(rr.pay)+ex,"\u203A",'data-t="'+t+'"');});
-    var isC = cur && tpls.indexOf(curStr)<0;
+      return line(cls,tag,ab[0]+" \u2013 "+ab[1],
+        hrs(rr.paidH)+" uur \u00B7 "+eur(rr.pay)+ex,"\u203A",'data-t="'+t+'"',extraBtn);}
+    var qs=quickShift(k);
+    if(qs&&qs!==curStr) h+=optLine("quick","Snel",qs);
+    tpls.forEach(function(t){
+      if(t===curStr)return;
+      h+=optLine("open",av==="none"?"Extra dienst":"Open dienst",t);});
+    S.savedTimes.forEach(function(t){
+      if(t===curStr||tpls.indexOf(t)>=0)return;
+      h+=optLine("saved","Opgeslagen",t,'<button class="chev x" data-del="'+t+'" title="Verwijderen" style="font-size:18px">\u00D7</button>');});
+    var isC = cur && tpls.indexOf(curStr)<0 && S.savedTimes.indexOf(curStr)<0;
     h+='<div class="entry cust"><div class="body"><div class="l1"><b>Eigen tijden</b></div>'+
        '<div class="custrow"><input class="num cS" placeholder="13:30" inputmode="numeric" value="'+
        (isC?cur.start:"")+'"><span style="color:var(--faint)">\u2013</span>'+
        '<input class="num cE" placeholder="23:00" inputmode="numeric" value="'+
-       (isC?cur.end:"")+'"><button class="go">Zet</button></div>'+
-       '<div class="l2" style="margin-top:5px">Alleen cijfers \u2014 1330 wordt 13:30</div></div></div>';}
+       (isC?cur.end:"")+'"><button class="go">Zet</button><button class="go keep" style="background:var(--pink)">Bewaar</button></div>'+
+       '<div class="l2" style="margin-top:5px">Alleen cijfers \u2014 1330 wordt 13:30. Bewaar zet de tijd ook in je lijst.</div></div></div>';}
 
   var el=document.getElementById(entriesId); el.innerHTML=h;
   var hd=document.getElementById(hdrId);
@@ -879,21 +937,33 @@ function renderDay(hdrId,entriesId,plan){
     var ab=this.dataset.t.split("-"); snap();
     if(S.avail[k]==="busy"){delete S.avail[k];}
     D[k]={start:ab[0],end:ab[1]}; render();};});
+  el.querySelectorAll("[data-del]").forEach(function(b){b.onclick=function(ev){
+    ev.stopPropagation(); var t=this.dataset.del;
+    snap(); S.savedTimes=S.savedTimes.filter(function(x){return x!==t;}); render();
+    toast(t.replace("-","\u2013")+" uit je lijst gehaald \u2014 \u21BA om terug te zetten");};});
   var rm=el.querySelector("[data-rm]");
   if(rm) rm.onclick=function(){snap(); delete D[k]; render(); toast("Dienst verwijderd");};
   var pinb=el.querySelector("[data-pin]");
   if(pinb) pinb.onclick=function(){snap(); if(D[k].pin)delete D[k].pin; else D[k].pin=1; render();};
-  var go=el.querySelector(".go"), iS=el.querySelector(".cS"), iE=el.querySelector(".cE");
-  function setCustom(){
+  var go=el.querySelector(".go:not(.keep)"), keep=el.querySelector(".go.keep"),
+      iS=el.querySelector(".cS"), iE=el.querySelector(".cE");
+  function setCustom(store){
     var a=normTime(iS.value), e=normTime(iE.value);
     if(!a){toast("Vul een begintijd in \u2014 tik 1330 voor 13:30");iS.focus();return;}
     if(!e){toast("Vul een eindtijd in \u2014 tik 2200 voor 22:00");iE.focus();return;}
     if(a===e){toast("Begin- en eindtijd zijn gelijk");return;}
     snap(); if(S.avail[k]==="busy")delete S.avail[k];
-    D[k]={start:a,end:e}; render();}
+    D[k]={start:a,end:e};
+    var t=a+"-"+e, isTpl=TPL_WEEK.concat(TPL_SAT).indexOf(t)>=0;
+    if(store===true){
+      if(isTpl) toast("Die tijd staat al in de lijst");
+      else if(S.savedTimes.indexOf(t)>=0) toast("Die tijd had je al bewaard");
+      else { S.savedTimes.push(t); toast(a+"\u2013"+e+" bewaard en gepland"); }}
+    render();}
   wireTime(iS,function(){if(iE&&!iE.value)iE.focus();else setCustom();});
-  wireTime(iE,setCustom);
-  if(go) go.onclick=setCustom;}
+  wireTime(iE,function(){setCustom();});
+  if(go) go.onclick=function(){setCustom();};
+  if(keep) keep.onclick=function(){setCustom(true);};}
 
 function renderCmp(){
   S.compare=S.compare.filter(function(id){return !!planById(id);});
@@ -963,10 +1033,11 @@ function renderSum(){
     eur(Math.abs(c))+"</b> "+(c>=0?"terug":"nog te betalen")+" bij je jaaraangifte. Ruwe schatting.";}
 
 var FMAP={fRate:"rate",fTravel:"travel",fSun:"sun",fSat:"sat",fFri:"fri",fFriFrom:"friFrom",
-  fBrk1:"brk1",fBrk2:"brk2",fVd:"vd",fEvd:"evd",fVt:"vt",fPens:"pens",fFran:"fran",fWhk:"whk",fSatDef:"satDefault"};
+  fBrk1:"brk1",fBrk2:"brk2",fVd:"vd",fEvd:"evd",fVt:"vt",fPens:"pens",fFran:"fran",fWhk:"whk",fSatDef:"satDefault",fLong:"longPress"};
 function renderSet(){
   for(var id in FMAP){var el=document.getElementById(id);
     if(el&&document.activeElement!==el) el.value=S.settings[FMAP[id]];}
+  renderShare();
   document.getElementById("mVer").textContent=VERSION;
   document.getElementById("mRulesSub").textContent=
     (S.rules.length?S.rules.length+" regel"+(S.rules.length>1?"s":""):"Geen regels")+" \u00b7 vakanties en vaste dagen";
@@ -978,6 +1049,7 @@ function renderSet(){
   document.getElementById("mImp").onclick=function(){document.getElementById("fileIn").click();};
   document.getElementById("mReset").onclick=function(){
     if(!confirm("Alles wissen? Dit kan niet ongedaan worden gemaakt."))return;
+    if(S.share&&S.share.group)shareLeave();
     localStorage.removeItem(KEY); S=fresh(); hist=[]; future=[]; render(); toast("Opnieuw begonnen");};}
 
 /* ---------- plan picker ---------- */
@@ -1121,7 +1193,8 @@ document.getElementById("fileIn").addEventListener("change",function(){
       if(!confirm("Alles vervangen door dit bestand?"))return;
       o.settings=Object.assign({},DEFAULTS,o.settings||{});
       o.avail=o.avail||{}; o.pref=o.pref||{}; o.rules=o.rules||[];
-      o.tab="plan"; S=o; hist=[]; future=[]; save(); closeSheet(); render(); toast("Ge\u00efmporteerd");
+      o.tab="plan"; S=shareDefaults(o); hist=[]; future=[]; save(); closeSheet(); render(); toast("Ge\u00efmporteerd");
+      if(S.share.group)fbStart();
     }catch(e){toast("Dat bestand kon ik niet lezen");}};
   fr.readAsText(f);
   this.value="";});
@@ -1243,7 +1316,9 @@ function optimize(){
         opts.push({s:sh.start,e:sh.end,hh:Math.round(rp.paidH*2),
           pay:rp.pay+st.travel,ok:true});
       } else if(av==="open"&&o.wd[mon]){
-        (dow===6?TPL_SAT:TPL_WEEK).forEach(function(t){
+        var cands=(dow===6?TPL_SAT:TPL_WEEK).slice();
+        S.savedTimes.forEach(function(t){if(cands.indexOf(t)<0)cands.push(t);});
+        cands.forEach(function(t){
           if(!o.tpl[t])return;
           var ab=t.split("-"), r=calcDay(k,{start:ab[0],end:ab[1]},st);
           var hh=Math.round(r.paidH*2);
@@ -1411,11 +1486,12 @@ function renderOptShell(){
       '>bruto</option></select></div>'+
     '';
 
-  var tplAll=TPL_WEEK.concat(TPL_SAT);
+  var tplAll=TPL_WEEK.concat(TPL_SAT), extraT=S.savedTimes.filter(function(t){return tplAll.indexOf(t)<0;});
   document.getElementById("optOpts").innerHTML=
     '<div class="sectitle" style="margin-top:0">Diensten</div><div class="chips">'+
-      tplAll.map(function(t){return '<button class="chip'+(o.tpl[t]?" on":"")+'" data-tpl="'+t+'">'+
-        t.replace("-"," \u2013 ")+'</button>';}).join("")+'</div>'+
+      tplAll.concat(extraT).map(function(t){return '<button class="chip'+(o.tpl[t]?" on":"")+'" data-tpl="'+t+'">'+
+        (extraT.indexOf(t)>=0?"\u2605 ":"")+t.replace("-"," \u2013 ")+'</button>';}).join("")+'</div>'+
+      (extraT.length?'<div class="note" style="margin-top:8px">\u2605 = je opgeslagen eigen tijden. Die staan standaard uit.</div>':'')+
     '<div class="sectitle">Dagen van de week</div><div class="chips">'+
       DOWNAMES.map(function(n,i){return '<button class="chip'+(o.wd[i]?" on":"")+'" data-wd="'+i+'">'+n+'</button>';}).join("")+
       '</div>'+
@@ -1651,8 +1727,339 @@ function optBasePicker(){
       optCache=null;renderOptResult();save();};});
     sh.querySelector("[data-close]").onclick=closeSheet;});}
 
+/* ================= DELEN (Firebase) ================= */
+var FIREBASE_CONFIG={
+  apiKey:"AIzaSyBoFu5-ZHMikD_Rv9VsckpyOhgsLfU0jF4",
+  authDomain:"medpetsplanner.firebaseapp.com",
+  projectId:"medpetsplanner",
+  storageBucket:"medpetsplanner.firebasestorage.app",
+  messagingSenderId:"730783917963",
+  appId:"1:730783917963:web:2ee583a80b5aa26a03b18e"
+};
+var FB_VERSION="12.18.0";
+var PALETTE=[["#7F77DD","Paars"],["#1D9E75","Zeegroen"],["#4FA627","Groen"],
+             ["#E8B923","Geel"],["#1F3A5F","Donkerblauw"],["#8D5B3A","Bruin"]];
+var STALE_DAYS=60;
+var FB={mods:null,app:null,auth:null,db:null,uid:null,unsub:null,loaded:false,ids:[],
+  status:"",statusKind:"",pubTimer:null,lastSig:null,starting:false,asked:""};
 
-S=load(); render();
+/* Your entry lives under your name: "Newt" -> members/newt.
+   key = the name you own in the group (set once you publish or confirm "dat ben ik"). */
+function shareDefaults(o){
+  o.share=Object.assign({group:"",name:"",color:"",planId:"",show:true,key:"",migrated:false},o.share||{});
+  o.friends=o.friends||{};
+  o.savedTimes=o.savedTimes||[];
+  return o;}
+function cleanName(v){return String(v||"").replace(/[^A-Za-z0-9 \-]/g,"").replace(/\s+/g," ").replace(/^\s+/,"").slice(0,20);}
+function nameKey(v){return cleanName(v).trim().toLowerCase();}
+function myKey(){return nameKey(S.share.name);}
+/* someone else's entry already uses this key, and it isn't the one you own */
+function nameConflict(){
+  var k=myKey();
+  return !!k && FB.loaded && k!==S.share.key && FB.ids.indexOf(k)>=0;}
+
+function fbStatus(txt,kind){
+  FB.status=txt; FB.statusKind=kind||"";
+  var el=document.getElementById("shStat");
+  if(el){el.textContent=txt; el.className="shstat"+(kind?" "+kind:"");}}
+
+function fbLoad(){
+  if(FB.mods)return Promise.resolve(FB.mods);
+  var base="https://www.gstatic.com/firebasejs/"+FB_VERSION+"/";
+  return Promise.all([import(base+"firebase-app.js"),import(base+"firebase-auth.js"),
+                      import(base+"firebase-firestore.js")])
+    .then(function(m){FB.mods={a:m[0],au:m[1],fs:m[2]};return FB.mods;});}
+
+function fbStart(){
+  if(!S.share.group||FB.starting)return;
+  FB.starting=true; FB.loaded=false; FB.ids=[];
+  fbStatus("Verbinden…");
+  fbLoad().then(function(m){
+    if(!FB.app){
+      FB.app=m.a.initializeApp(FIREBASE_CONFIG);
+      FB.auth=m.au.getAuth(FB.app);
+      FB.db=m.fs.getFirestore(FB.app);}
+    return FB.auth.currentUser?FB.auth.currentUser:
+      m.au.signInAnonymously(FB.auth).then(function(c){return c.user;});
+  }).then(function(user){
+    FB.uid=user.uid; FB.starting=false;
+    /* versie 3.0 sloeg je op onder een willekeurige ID: die eenmalig opruimen */
+    if(!S.share.migrated){
+      FB.mods.fs.deleteDoc(FB.mods.fs.doc(FB.db,"groups",S.share.group,"members",FB.uid)).catch(function(){});
+      S.share.migrated=true; save();}
+    fbSubscribe();
+  }).catch(function(e){
+    FB.starting=false;
+    fbStatus("Geen verbinding — je ziet de laatst bekende diensten"+
+      (S.friendsAt?" ("+fmtAgo(S.friendsAt)+")":""),"err");});}
+
+function fmtAgo(t){
+  var m=Math.round((Date.now()-t)/60000);
+  if(m<1)return "net";
+  if(m<60)return m+" min geleden";
+  var h=Math.round(m/60); if(h<48)return h+" uur geleden";
+  return Math.round(h/24)+" dagen geleden";}
+
+function fbSubscribe(){
+  var m=FB.mods; if(!m||!FB.db)return;
+  if(FB.unsub){FB.unsub();FB.unsub=null;}
+  var g=S.share.group;
+  FB.unsub=m.fs.onSnapshot(m.fs.collection(FB.db,"groups",g,"members"),function(snap){
+    if(S.share.group!==g)return;
+    var out={}, ids=[];
+    snap.forEach(function(d){ ids.push(d.id); if(d.id!==S.share.key) out[d.id]=d.data(); });
+    var first=!FB.loaded;
+    FB.ids=ids; FB.loaded=true;
+    /* your own entry was removed by someone else: you no longer own it */
+    if(S.share.key&&ids.indexOf(S.share.key)<0&&!first){ FB.lastSig=null; sharePublishSoon(); }
+    S.friends=out; S.friendsAt=Date.now(); save();
+    shareStatusLine();
+    if(nameConflict()) askSameName();
+    else if(first) sharePublishNow();
+    friendsChanged();
+  },function(err){
+    fbStatus("Groep kon niet worden geladen ("+(err&&err.code||"fout")+")","err");});}
+
+function shareStatusLine(){
+  if(!FB.loaded)return;
+  if(nameConflict()){fbStatus("“"+cleanName(S.share.name).trim()+"” staat al in de groep — bevestig hieronder of kies een andere naam","err");return;}
+  var n=visibleFriends().length;
+  fbStatus("Verbonden als "+(cleanName(S.share.name).trim()||"—")+" · "+
+    (n?n+" collega"+(n>1?"'s":""):"nog niemand anders in de groep"),"ok");}
+
+/* only the start/end per day of the shared plan, from last month onwards */
+function sharePayload(){
+  var pl=planById(S.share.planId)||curPlan(), days={};
+  var n=new Date(), d0=new Date(n.getFullYear(),n.getMonth()-1,1), from=key(d0.getFullYear(),d0.getMonth(),1);
+  Object.keys(pl.days).sort().forEach(function(k){
+    if(k<from)return;
+    if(Object.keys(days).length>=380)return;
+    var d=pl.days[k]; days[k]=d.start+"-"+d.end;});
+  return {name:cleanName(S.share.name).trim(),color:S.share.color,days:days};}
+
+function sharePublishSoon(){
+  if(!S||!S.share||!S.share.group||!FB.uid)return;
+  clearTimeout(FB.pubTimer);
+  FB.pubTimer=setTimeout(sharePublishNow,1200);}
+
+function sharePublishNow(){
+  if(!S.share.group||!FB.uid||!FB.db||!FB.loaded)return;
+  var k=myKey(); if(!k||!S.share.color)return;
+  if(nameConflict()){shareStatusLine();askSameName();return;}
+  var m=FB.mods, p=sharePayload(), sig=k+"|"+JSON.stringify(p);
+  if(sig===FB.lastSig&&FB.ids.indexOf(k)>=0)return;
+  var old=S.share.key;
+  /* claim first: Firestore echoes our own write before the promise resolves */
+  if(old!==k){S.share.key=k; save();}
+  p.updated=Date.now();
+  m.fs.setDoc(m.fs.doc(FB.db,"groups",S.share.group,"members",k),p).then(function(){
+    FB.lastSig=sig; if(FB.ids.indexOf(k)<0)FB.ids.push(k);
+    if(old&&old!==k) m.fs.deleteDoc(m.fs.doc(FB.db,"groups",S.share.group,"members",old)).catch(function(){});
+    shareStatusLine();
+  }).catch(function(e){
+    if(S.share.key===k&&old!==k){S.share.key=old; save();}
+    fbStatus("Opslaan lukte niet ("+(e&&e.code||"fout")+")","err");});}
+
+function askSameName(){
+  var k=myKey(); if(!k||FB.asked===k)return;
+  FB.asked=k;
+  var nm=escapeHtml(cleanName(S.share.name).trim());
+  openSheet('<h3>“'+nm+'” staat al in deze groep</h3>'+
+    '<div class="note" style="margin:0 0 12px">Ben jij dat, bijvoorbeeld na het wissen van je browsergegevens of op een nieuwe telefoon? '+
+    'Dan neem je je eigen plek weer over. Zo niet, kies dan een andere naam.</div>'+
+    '<div class="btnrow"><button class="btn" data-other="1">Andere naam</button>'+
+    '<button class="btn pri" data-me="1">Ja, dat ben ik</button></div>',function(sh){
+      sh.querySelector("[data-me]").onclick=function(){
+        S.share.key=k; save(); closeSheet(); FB.lastSig=null; sharePublishNow();
+        delete S.friends[k]; shareStatusLine(); friendsChanged(); toast("Welkom terug, "+cleanName(S.share.name).trim());};
+      sh.querySelector("[data-other]").onclick=function(){
+        closeSheet(); S.tab="set"; render();
+        var i=document.getElementById("shName"); if(i){i.focus();i.select();}
+        toast("Kies een andere naam");};});}
+
+function shareLeave(){
+  var g=S.share.group, m=FB.mods, k=S.share.key;
+  if(FB.unsub){FB.unsub();FB.unsub=null;}
+  if(m&&FB.db&&FB.uid&&g&&k)
+    m.fs.deleteDoc(m.fs.doc(FB.db,"groups",g,"members",k)).catch(function(){});
+  S.share.group=""; S.share.key=""; S.friends={}; S.friendsAt=0;
+  FB.lastSig=null; FB.loaded=false; FB.ids=[]; FB.asked="";
+  save(); fbStatus(""); render(); toast("Groep verlaten");}
+
+function newGroupCode(){
+  var a="ABCDEFGHJKLMNPQRSTUVWXYZ23456789", c="";
+  var buf=(window.crypto&&crypto.getRandomValues)?crypto.getRandomValues(new Uint32Array(8)):null;
+  for(var i=0;i<8;i++) c+=a[(buf?buf[i]:Math.floor(Math.random()*1e9))%a.length];
+  return c;}
+function cleanCode(v){return (v||"").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,12);}
+function fmtCode(c){return c.length===8?c.slice(0,4)+"-"+c.slice(4):c;}
+
+/* colleagues to show: not stale, one entry per name (latest wins), never yourself */
+function visibleFriends(){
+  var me=myKey(), mine=S.share.key, cut=Date.now()-STALE_DAYS*864e5, by={};
+  Object.keys(S.friends||{}).forEach(function(id){
+    var f=S.friends[id]; if(!f||!f.name)return;
+    var nm=String(f.name).trim().toLowerCase();
+    if(id===mine||nm===me)return;
+    if((f.updated||0)<cut)return;
+    if(!by[nm]||(f.updated||0)>(by[nm].updated||0)) by[nm]=f;});
+  return Object.keys(by).sort().map(function(n){return by[n];});}
+function friendsOn(k){
+  if(!S.share.group||!S.share.show)return [];
+  return visibleFriends().filter(function(f){return f.days&&f.days[k];})
+    .map(function(f){return {name:f.name,color:f.color||"#999",t:f.days[k]};});}
+function takenColors(){return visibleFriends().map(function(f){return f.color;});}
+
+function friendsChanged(){
+  if(S.tab==="plan"||S.tab==="cmp"){ preserveScroll(function(){
+    if(S.tab==="plan"){renderCal("calGrid",curPlan(),{friends:true});renderDay("dayHdr","entries",curPlan());renderFriendLegend();}
+    else renderCmp();});}
+  if(S.tab==="set"){
+    var a=document.activeElement;
+    if(a&&(a.id==="shName"||a.id==="shCode")) shareStatusLine();
+    else renderShare();}}
+
+function renderFriendLegend(){
+  var el=document.getElementById("friendLegend"); if(!el)return;
+  var fs=(S.share.group&&S.share.show)?visibleFriends():[];
+  el.hidden=!fs.length;
+  el.innerHTML=fs.map(function(f){
+    return '<span><i style="background:'+f.color+'"></i>'+escapeHtml(f.name)+'</span>';}).join("");}
+
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+
+function renderShare(){
+  var box=document.getElementById("shareBox"); if(!box)return;
+  var sh=S.share, taken=takenColors();
+  var others=visibleFriends().map(function(f){return escapeHtml(f.name);});
+  var planOpts=S.plans.map(function(p){
+    return '<option value="'+p.id+'"'+(p.id===(sh.planId||S.active)?" selected":"")+'>'+escapeHtml(p.name)+'</option>';}).join("");
+  var h='<div class="sectitle" style="margin-top:0">Jouw naam</div>'+
+    '<input class="txtin" id="shName" maxlength="20" placeholder="Bijv. Newt" autocomplete="off" value="'+escapeHtml(sh.name)+'">'+
+    '<div class="shstat">Je naam is je login: met dezelfde naam en groepscode kom je altijd weer bij je eigen plek.'+
+      (others.length?' Al in de groep: '+others.join(", ")+'.':'')+'</div>'+
+    (sh.group&&nameConflict()?
+      '<div class="codebox" style="display:block"><div style="font-weight:700;margin-bottom:8px">“'+escapeHtml(cleanName(sh.name).trim())+
+      '” staat al in de groep. Ben jij dat?</div><div class="btnrow" style="margin-top:0">'+
+      '<button class="btn" id="shOther">Andere naam</button><button class="btn pri" id="shMe">Ja, dat ben ik</button></div></div>':'')+
+    '<div class="sectitle">Jouw kleur</div><div class="swatches">'+
+    PALETTE.map(function(c){
+      var isTaken=taken.indexOf(c[0])>=0&&sh.color!==c[0];
+      return '<button class="sw'+(sh.color===c[0]?" on":"")+(isTaken?" taken":"")+'" data-col="'+c[0]+
+        '" title="'+c[1]+(isTaken?" (bezet)":"")+'" style="background:'+c[0]+'"></button>';}).join("")+
+    '</div>';
+  if(!sh.group){
+    h+='<div class="sectitle">Groep</div>'+
+      '<div class="btnrow" style="margin-top:4px"><button class="btn pri" id="shNew">Nieuwe groep maken</button></div>'+
+      '<div class="sectitle">Of meedoen met een code</div>'+
+      '<div style="display:flex;gap:8px"><input class="txtin" id="shCode" placeholder="ABCD-2345" autocapitalize="characters" style="flex:1;letter-spacing:.08em">'+
+      '<button class="btn" id="shJoin" style="flex:0 0 auto;padding:10px 16px">Meedoen</button></div>'+
+      '<div class="note">Alleen de begin- en eindtijden van één plan worden gedeeld. Loon, bezet, voorkeur en je andere plannen blijven op je telefoon.</div>';
+  } else {
+    h+='<div class="sectitle">Groepscode</div>'+
+      '<div class="codebox"><b>'+fmtCode(sh.group)+'</b><button id="shCopy">Kopieer</button></div>'+
+      '<div class="fld"><label for="shPlan">Gedeeld plan</label><select id="shPlan">'+planOpts+'</select></div>'+
+      '<div class="fld"><label for="shShow">Collega’s tonen in rooster</label><select id="shShow">'+
+        '<option value="1"'+(sh.show?" selected":"")+'>Aan</option><option value="0"'+(!sh.show?" selected":"")+'>Uit</option></select></div>'+
+      '<div class="shstat'+(FB.statusKind?" "+FB.statusKind:"")+'" id="shStat">'+escapeHtml(FB.status)+'</div>'+
+      '<div class="btnrow"><button class="btn dgr" id="shLeave">Groep verlaten</button></div>'+
+      '<div class="note">Deel de code alleen met je collega’s — wie hem heeft, ziet je diensttijden.</div>';}
+  box.innerHTML=h;
+
+  var nm=document.getElementById("shName");
+  nm.oninput=function(){
+    var c=cleanName(this.value);
+    if(c!==this.value){var pos=c.length;this.value=c;try{this.setSelectionRange(pos,pos);}catch(e){}}
+    sh.name=c; FB.asked=""; save(); sharePublishSoon();};
+  nm.onblur=function(){sh.name=cleanName(this.value).trim();this.value=sh.name;save();renderShare();};
+  var me=document.getElementById("shMe");
+  if(me)me.onclick=function(){FB.asked="";
+    S.share.key=myKey(); save(); FB.lastSig=null; sharePublishNow(); delete S.friends[S.share.key];
+    shareStatusLine(); friendsChanged(); toast("Welkom terug, "+cleanName(sh.name).trim());};
+  var ot=document.getElementById("shOther");
+  if(ot)ot.onclick=function(){nm.focus();nm.select();};
+  box.querySelectorAll("[data-col]").forEach(function(b){b.onclick=function(){
+    if(this.classList.contains("taken")){toast("Die kleur heeft een collega al");return;}
+    sh.color=this.dataset.col; save(); sharePublishSoon(); renderShare();};});
+  function ready(){
+    sh.name=cleanName(sh.name).trim();
+    if(!sh.name){toast("Vul eerst je naam in");nm.focus();return false;}
+    if(!sh.color){toast("Kies eerst een kleur");return false;}
+    return true;}
+  var nw=document.getElementById("shNew");
+  if(nw)nw.onclick=function(){ if(!ready())return;
+    sh.group=newGroupCode(); sh.key=""; sh.migrated=true; sh.planId=sh.planId||S.active; FB.asked=""; save();
+    renderShare(); fbStart(); toast("Groep gemaakt — deel de code met je collega’s");};
+  var jn=document.getElementById("shJoin"), ci=document.getElementById("shCode");
+  if(ci)ci.oninput=function(){var c=cleanCode(this.value);this.value=fmtCode(c);};
+  if(jn)jn.onclick=function(){ if(!ready())return;
+    var c=cleanCode(ci.value);
+    if(c.length<6){toast("Die code klopt niet");return;}
+    sh.group=c; sh.key=""; sh.migrated=true; sh.planId=sh.planId||S.active; FB.asked=""; save();
+    renderShare(); fbStart(); toast("Verbinden met groep…");};
+  var cp=document.getElementById("shCopy");
+  if(cp)cp.onclick=function(){
+    var t=fmtCode(sh.group);
+    if(navigator.clipboard)navigator.clipboard.writeText(t).then(function(){toast("Code gekopieerd");},function(){toast(t);});
+    else toast(t);};
+  var sp=document.getElementById("shPlan");
+  if(sp)sp.onchange=function(){sh.planId=this.value;save();sharePublishSoon();};
+  var ss=document.getElementById("shShow");
+  if(ss)ss.onchange=function(){sh.show=this.value==="1";save();};
+  var lv=document.getElementById("shLeave");
+  if(lv)lv.onclick=function(){if(confirm("Groep verlaten? Je diensten worden dan niet meer gedeeld."))shareLeave();};}
+
+/* ================= SNEL + LANG INDRUKKEN ================= */
+function quickShift(k){
+  var p=k.split("-").map(Number), dow=new Date(p[0],p[1]-1,p[2]).getDay();
+  var byDow={}, all={};
+  S.plans.forEach(function(pl){
+    if((pl.kind||"manual")!=="manual")return;
+    Object.keys(pl.days).forEach(function(d){
+      var q=d.split("-").map(Number), w=new Date(q[0],q[1]-1,q[2]).getDay();
+      var t=pl.days[d].start+"-"+pl.days[d].end;
+      all[t]=(all[t]||0)+1;
+      if(w===dow)byDow[t]=(byDow[t]||0)+1;});});
+  var order=TPL_WEEK.concat(TPL_SAT).concat(S.savedTimes);
+  function best(m){
+    var ks=Object.keys(m); if(!ks.length)return null;
+    ks.sort(function(a,b){
+      if(m[b]!==m[a])return m[b]-m[a];
+      var ia=order.indexOf(a), ib=order.indexOf(b);
+      return (ia<0?99:ia)-(ib<0?99:ib);});
+    return ks[0];}
+  return best(byDow)||(dow===6?null:best(all));}
+
+var LP={timer:null,fired:false,x:0,y:0};
+function wireLongPress(cell,plan){
+  if(S.settings.longPress==="off")return;
+  function cancel(){clearTimeout(LP.timer);LP.timer=null;}
+  cell.addEventListener("contextmenu",function(e){e.preventDefault();});
+  cell.addEventListener("pointerdown",function(e){
+    if(e.pointerType==="mouse"&&e.button!==0)return;
+    LP.fired=false; LP.x=e.clientX; LP.y=e.clientY; cancel();
+    var k=cell.dataset.k;
+    LP.timer=setTimeout(function(){LP.timer=null;LP.fired=true;longPressDay(k,plan);},500);});
+  cell.addEventListener("pointermove",function(e){
+    if(LP.timer&&(Math.abs(e.clientX-LP.x)>10||Math.abs(e.clientY-LP.y)>10))cancel();});
+  ["pointerup","pointercancel","pointerleave"].forEach(function(ev){cell.addEventListener(ev,cancel);});}
+
+function longPressDay(k,plan){
+  var D=plan.days;
+  if(navigator.vibrate)try{navigator.vibrate(15);}catch(e){}
+  if(D[k]){
+    var was=D[k].start+"–"+D[k].end;
+    snap(); delete D[k]; render(); toast(was+" verwijderd — ↺ om terug te zetten"); return;}
+  if(avOf(k)==="busy"){toast("Deze dag staat op bezet");return;}
+  var q=quickShift(k);
+  if(!q){toast("Nog geen snelle dienst — plan deze dag eerst via de lijst");return;}
+  var ab=q.split("-");
+  snap(); D[k]={start:ab[0],end:ab[1]}; render();
+  toast(ab[0]+"–"+ab[1]+" gepland — ↺ om terug te draaien");}
+
+
+S=load(); render(); if(S.share&&S.share.group)fbStart();
 </script>
 </body>
 </html>
